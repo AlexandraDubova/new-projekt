@@ -12,7 +12,7 @@ class Pipe(pygame.sprite.Sprite):
         if position == 1:
             self.image = pygame.transform.flip(self.image, False, True)
             self.rect.bottomleft = [x, y]
-        if position == -1:
+        elif position == -1:
             self.rect.topleft = [x, y]
 
     def update(self):

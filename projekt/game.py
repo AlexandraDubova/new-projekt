@@ -27,6 +27,7 @@ class Game:
         self.score = 0
         self.pass_pipe = False
         #obrazky
+        
         self.bg = pygame.image.load("img/bg.png")
         self.ground_img = pygame.image.load("img/ground.png")
         self.button_img = pygame.image.load("img/restart.png")
@@ -115,9 +116,13 @@ class Game:
                 #generovani novych rour
                 time_now = pygame.time.get_ticks()
                 if time_now - self.last_pipe > pipe_frequency:
-                    pipe_height = random.randint(-100, 100)
-                    btm_pipe = Pipe(screen_widht,  int(screen_height / 2) + pipe_height, -1,  self.pipe_speed, self.pipe_gap)
-                    top_pipe = Pipe(screen_widht,  int(screen_height / 2) + pipe_height, 1, self.pipe_speed, self.pipe_gap)
+                    
+                    top_limit = 100
+                    bottom_limit = screen_height - 100
+
+                    pipe_center = random.randint(top_limit  + self.pipe_gap // 2, bottom_limit - self.pipe_gap // 2)
+                    btm_pipe = Pipe(screen_widht,  pipe_center + self.pipe_gap // 2, -1, self.pipe_speed, self.pipe_gap)
+                    top_pipe = Pipe(screen_widht,   pipe_center - self.pipe_gap // 2, 1, self.pipe_speed, self.pipe_gap)
                     self.pipe_group.add(btm_pipe)
                     self.pipe_group.add(top_pipe)
                     self.last_pipe = time_now
