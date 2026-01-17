@@ -190,11 +190,12 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.flying = True
+                if event.type == pygame.MOUSEBUTTONDOWN and not self.game_over:
+                    self.snd_flap.play()
                     
-                    if not self.flying and not self.game_over:
-                        self.snd_flap.play()
+                    if not self.flying:
+                        self.flying = True
+                        
 
 
     def menu(self):
