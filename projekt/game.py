@@ -38,7 +38,16 @@ class Game:
         self.pipe_light = pygame.image.load("img/pipe.png")
         self.pipe_dark = pygame.image.load("img/pipe-n.png")
 
+        #zvuky
 
+        # zvuky
+        self.snd_flap = pygame.mixer.Sound("audio/letani.wav")
+        self.snd_score = pygame.mixer.Sound("audio/prulet.wav")
+        self.snd_hit = pygame.mixer.Sound("audio/konec.wav")
+
+        self.snd_flap.set_volume(0.5)
+        self.snd_score.set_volume(0.6)
+        self.snd_hit.set_volume(0.7)
 
         self.restart_btn = Button(
             screen_widht // 2 - 60,
@@ -127,11 +136,14 @@ class Game:
                     if self.bird_group.sprites()[0].rect.left > self.pipe_group.sprites()[0].rect.right:
                         self.score += 1
                         self.pass_pipe = False
+                        self.snd_score.play()
 
             self.draw_text(str(self.score), self.font, white, int(screen_widht / 2), 20)
 
             #kolize
             if pygame.sprite.groupcollide(self.bird_group, self.pipe_group, False, False) or self.flappy.rect.top < 0:
+                if not self.game_over:
+                    self.snd_hit.play()
                 self.game_over = True
         
 
@@ -179,8 +191,10 @@ class Game:
                     self.running = False
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.flying = True
+                    
                     if not self.flying and not self.game_over:
-                        self.flying = True
+                        self.snd_flap.play()
 
 
     def menu(self):

@@ -5,6 +5,7 @@ from pygame.locals import *
 
 def main():
     pygame.init()
+    pygame.mixer.init()
     game = Game()
     game.run()
     pygame.quit()
