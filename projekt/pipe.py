@@ -2,9 +2,10 @@ import pygame
 from settings import *
 
 class Pipe(pygame.sprite.Sprite):
-    def __init__(self, x, y, position, speed, gap):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("img/pipe.png")
+    def __init__(self, x, y, position, speed, gap, image):
+        super().__init__()
+
+        self.image = image
         self.rect = self.image.get_rect()
         self.speed = speed
         self.gap = gap 

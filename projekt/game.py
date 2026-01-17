@@ -15,6 +15,7 @@ class Game:
 
         #definice fontu
         self.font = pygame.font.SysFont('Bauhaus 93', 60)
+
         #promenne
         self.ground_scroll = 0
         #pujde przc
@@ -26,11 +27,38 @@ class Game:
         self.last_pipe = pygame.time.get_ticks()
         self.score = 0
         self.pass_pipe = False
-        #obrazky
         
+        #obrazky
         self.bg = pygame.image.load("img/bg.png")
         self.ground_img = pygame.image.load("img/ground.png")
-        self.button_img = pygame.image.load("img/restart.png")
+        self.restart_img = pygame.image.load("img/restart.png")
+        self.exit_img = pygame.image.load("img/exit.png")
+        self.menu_img = pygame.image.load("img/menu.png")
+        self.bg_dark = pygame.image.load("img/bg-n.png")
+        self.pipe_light = pygame.image.load("img/pipe.png")
+        self.pipe_dark = pygame.image.load("img/pipe-n.png")
+
+
+
+        self.restart_btn = Button(
+            screen_widht // 2 - 60,
+            screen_height // 2 - 20,
+            self.restart_img
+                        )
+
+        self.menu_btn = Button(
+            screen_widht // 2 - 60,
+            screen_height // 2 + 40,
+            self.menu_img
+                        )
+
+        self.exit_btn = Button(
+            screen_widht // 2 - 60,
+            screen_height // 2 + 100,
+            self.exit_img
+        )
+
+        self.dark_mode = False
 
         #skupiny sprite 
         self.bird_group = pygame.sprite.Group()
@@ -38,13 +66,10 @@ class Game:
 
         self.flappy = Bird(100, int(screen_height / 2))
         self.bird_group.add(self.flappy)
-
-        #restart button
-        self.button = Button(screen_widht // 2 - 50, screen_height // 2 - 100, self.button_img)
         
         self.state = 'MENU'
 
-        self.difficulty = 'MEDIUM'  # Nastavení výchozí obtížnosti
+        self.difficulty = 'MEDIUM'  # nastaveni vychozi obtížnosti
 
     def draw_text(self, text, font, text_col, x, y):
         img = font.render(text, True, text_col)
@@ -71,13 +96,17 @@ class Game:
 
             elif self.state == 'SETTINGS':
                 self.settings()
+
+            elif self.state == 'GAME_OVER':
+                self.game_over_screen()
             
             pygame.display.update()
             self.clock.tick(fps)
 
     def play_game(self):
             #pozadi
-            self.screen.blit(self.bg, (0,0))
+            bg_img = self.bg_dark if self.dark_mode else self.bg
+            self.screen.blit(bg_img, (0,0))
             self.screen.blit(self.ground_img, (self.ground_scroll, 768))
 
             self.bird_group.draw(self.screen)
@@ -116,16 +145,23 @@ class Game:
                 #generovani novych rour
                 time_now = pygame.time.get_ticks()
                 if time_now - self.last_pipe > pipe_frequency:
-                    
-                    top_limit = 100
-                    bottom_limit = screen_height - 100
 
-                    pipe_center = random.randint(top_limit  + self.pipe_gap // 2, bottom_limit - self.pipe_gap // 2)
-                    btm_pipe = Pipe(screen_widht,  pipe_center + self.pipe_gap // 2, -1, self.pipe_speed, self.pipe_gap)
-                    top_pipe = Pipe(screen_widht,   pipe_center - self.pipe_gap // 2, 1, self.pipe_speed, self.pipe_gap)
+                    pipe_height = 320
+                    
+                    top_limit = 120
+                    bottom_limit = screen_height - 120
+
+                    top_pipe_bottom = random.randint(top_limit + pipe_height, bottom_limit - self.pipe_gap)
+                    
+                    pipe_img = self.pipe_dark if self.dark_mode else self.pipe_light
+
+                    btm_pipe = Pipe(screen_widht,  top_pipe_bottom + self.pipe_gap , -1, self.pipe_speed, self.pipe_gap, pipe_img)
+                    top_pipe = Pipe(screen_widht,   top_pipe_bottom , 1, self.pipe_speed, self.pipe_gap, pipe_img)
                     self.pipe_group.add(btm_pipe)
                     self.pipe_group.add(top_pipe)
                     self.last_pipe = time_now
+
+
 
         
                 self.ground_scroll -= self.pipe_speed
@@ -134,20 +170,22 @@ class Game:
 
                 self.pipe_group.update()
 
-            #restart hry
             if self.game_over:
-                if self.button.draw(self.screen):
-                    self.reset_game()
-               
+                self.state = 'GAME_OVER'
+                return
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                if event.type == pygame.MOUSEBUTTONDOWN and not self.flying and not self.game_over:
-                    self.flying = True
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if not self.flying and not self.game_over:
+                        self.flying = True
+
 
     def menu(self):
-        self.screen.blit(self.bg, (0,0))
+        bg_img = self.bg_dark if self.dark_mode else self.bg    
+        self.screen.blit(bg_img, (0,0))
         self.screen.blit(self.ground_img, (self.ground_scroll, 768))
         self.draw_text('PLAY', self.font, white, int(screen_widht / 2) - 50, int(screen_height / 2) - 150)
 
@@ -172,7 +210,8 @@ class Game:
 
         
     def settings(self):
-        self.screen.blit(self.bg, (0,0))
+        bg_img = self.bg_dark if self.dark_mode else self.bg
+        self.screen.blit(bg_img, (0,0))
         self.screen.blit(self.ground_img, (self.ground_scroll, 768))
 
         color_options = {
@@ -190,6 +229,7 @@ class Game:
 
         self.draw_text("BACK", self.font, white, screen_widht / 2 - 60, screen_height - 250) 
 
+        self.draw_text(f"DARK MODE: {'ON' if self.dark_mode else 'OFF'}", self.font, white, screen_widht / 2 - 200, y_start + spacing * 4 )
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -212,10 +252,12 @@ class Game:
                 elif screen_height - 260 < y < screen_height - 210:
                     self.state = 'MENU'
                     return
+                elif y_start + spacing * 4 < y < y_start + spacing * 4 + 40:
+                    self.dark_mode = not self.dark_mode
 
     def apply_difficulty(self):
         if self.difficulty == 'EASY':
-            self.pipe_gap = 180
+            self.pipe_gap = 170
             self.pipe_speed = 3
 
         elif self.difficulty == 'MEDIUM':
@@ -225,3 +267,50 @@ class Game:
         elif self.difficulty == 'HARD':
             self.pipe_gap = 120
             self.pipe_speed = 5
+
+        self.pipe_group.empty()
+        self.last_pipe = pygame.time.get_ticks()
+
+    def game_over_screen(self):
+        bg_img = self.bg_dark if self.dark_mode else self.bg
+        self.screen.blit(bg_img, (0, 0))
+        self.screen.blit(self.ground_img, (0, 768))
+
+        self.draw_text(
+            "GAME OVER",
+            self.font,
+            white,
+            screen_widht // 2 - 120,
+            140
+        )
+        self.draw_text(
+            f"SCORE: {self.score}",
+            self.font,
+            white,
+            screen_widht // 2 - 110,
+            200
+        )
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                raise SystemExit
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                
+                if self.restart_btn.draw(self.screen):
+                    self.reset_game()
+                    self.state = 'PLAYING'
+                    return
+
+                if self.menu_btn.draw(self.screen):
+                    self.state = 'MENU'
+                    return
+
+                if self.exit_btn.draw(self.screen):
+                    pygame.quit()
+                    raise SystemExit
+        
+        self.restart_btn.draw(self.screen)
+        self.menu_btn.draw(self.screen)
+        self.exit_btn.draw(self.screen)
