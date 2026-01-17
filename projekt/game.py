@@ -45,9 +45,13 @@ class Game:
         self.snd_score = pygame.mixer.Sound("audio/prulet.wav")
         self.snd_hit = pygame.mixer.Sound("audio/konec.wav")
 
-        self.snd_flap.set_volume(0.5)
-        self.snd_score.set_volume(0.6)
-        self.snd_hit.set_volume(0.7)
+        #nastaveni hlasitosti zvuku
+        self.sound_on = True
+
+        self.volume = 0.5
+        self.snd_flap.set_volume(self.volume)
+        self.snd_score.set_volume(self.volume)
+        self.snd_hit.set_volume(self.volume)
 
         self.restart_btn = Button(
             screen_widht // 2 - 60,
@@ -136,14 +140,17 @@ class Game:
                     if self.bird_group.sprites()[0].rect.left > self.pipe_group.sprites()[0].rect.right:
                         self.score += 1
                         self.pass_pipe = False
-                        self.snd_score.play()
+                        if self.sound_on:
+                            self.snd_score.play()
+
 
             self.draw_text(str(self.score), self.font, white, int(screen_widht / 2), 20)
 
             #kolize
             if pygame.sprite.groupcollide(self.bird_group, self.pipe_group, False, False) or self.flappy.rect.top < 0:
                 if not self.game_over:
-                    self.snd_hit.play()
+                    if self.sound_on:
+                        self.snd_hit.play()
                 self.game_over = True
         
 
@@ -191,7 +198,8 @@ class Game:
                     self.running = False
 
                 if event.type == pygame.MOUSEBUTTONDOWN and not self.game_over:
-                    self.snd_flap.play()
+                    if self.sound_on:
+                        self.snd_flap.play()
                     
                     if not self.flying:
                         self.flying = True
@@ -245,7 +253,11 @@ class Game:
         self.draw_text("BACK", self.font, white, screen_widht / 2 - 60, screen_height - 250) 
 
         self.draw_text(f"DARK MODE: {'ON' if self.dark_mode else 'OFF'}", self.font, white, screen_widht / 2 - 200, y_start + spacing * 4 )
+        
+        self.draw_text(f"SOUND: {'ON' if self.sound_on else 'OFF'}", self.font, white, screen_widht / 2 - 130, y_start + spacing * 5 - 20 )
+
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 self.running = False
 
@@ -264,11 +276,16 @@ class Game:
                     self.difficulty = 'HARD'
                     self.apply_difficulty() 
 
+                elif y_start + spacing * 4 < y < y_start + spacing * 4 + 40:
+                    self.dark_mode = not self.dark_mode
+
+                elif y_start + spacing * 5 < y < y_start + spacing * 5 + 40:
+                    self.sound_on = not self.sound_on
+                
                 elif screen_height - 260 < y < screen_height - 210:
                     self.state = 'MENU'
                     return
-                elif y_start + spacing * 4 < y < y_start + spacing * 4 + 40:
-                    self.dark_mode = not self.dark_mode
+        
 
     def apply_difficulty(self):
         if self.difficulty == 'EASY':
@@ -295,7 +312,7 @@ class Game:
             "GAME OVER",
             self.font,
             white,
-            screen_widht // 2 - 120,
+            screen_widht // 2 - 140,
             140
         )
         self.draw_text(
@@ -325,6 +342,7 @@ class Game:
                 if self.exit_btn.draw(self.screen):
                     pygame.quit()
                     raise SystemExit
+                
         
         self.restart_btn.draw(self.screen)
         self.menu_btn.draw(self.screen)
