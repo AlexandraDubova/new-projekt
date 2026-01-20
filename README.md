@@ -32,6 +32,7 @@ Hra obsahuje:
 ## 📂 Struktura projektu
 projekt/
 │── main.py # spuštění hry
+
 │── game.py # hlavní herní logika a stavový systém
 │── player.py # třída ptáka
 │── pipe.py # třída rour
