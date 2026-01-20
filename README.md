@@ -1,7 +1,6 @@
 # Flappy Bird – Python (Pygame)
 
 Tento projekt je vlastní implementace jednoduché 2D hry inspirované hrou **Flappy Bird**, vytvořená v jazyce **Python** s využitím knihovny **Pygame**.  
-Projekt slouží především jako studijní práce zaměřená na herní logiku, práci s událostmi, sprite objekty a stavový systém hry.
 
 ---
 
@@ -50,14 +49,9 @@ projekt/
 - **Dark mode**
 - **Zvuky (ON / OFF)**
 
----
-
-## ℹ️ Poznámka
-Projekt je inspirován existující hrou *Flappy Bird*, avšak veškerý kód byl vytvořen samostatně jako studijní práce.  
-Cílem projektu nebylo vytvořit originální herní koncept, ale naučit se principy vývoje her v knihovně Pygame.
 
 ---
 
 ## ▶️ Spuštění projektu
-1. Nainstaluj Python 3
-2. Nainstaluj Pygame: pip install pygame
+1.  Python 3
+2.  Pygame: pip install pygame
