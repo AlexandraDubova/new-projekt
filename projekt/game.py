@@ -18,11 +18,9 @@ class Game:
 
         #promenne
         self.ground_scroll = 0
-        #pujde przc
         self.pipe_speed = 4
         self.flying = False
-        self.game_over = False
-        #pujde przc
+        self.game_over = False       
         self.pipe_gap = 150
         self.last_pipe = pygame.time.get_ticks()
         self.score = 0
@@ -38,8 +36,6 @@ class Game:
         self.pipe_light = pygame.image.load("img/pipe.png")
         self.pipe_dark = pygame.image.load("img/pipe-n.png")
 
-        #zvuky
-
         # zvuky
         self.snd_flap = pygame.mixer.Sound("audio/letani.wav")
         self.snd_score = pygame.mixer.Sound("audio/prulet.wav")
@@ -47,12 +43,13 @@ class Game:
 
         #nastaveni hlasitosti zvuku
         self.sound_on = True
-
         self.volume = 0.5
         self.snd_flap.set_volume(self.volume)
         self.snd_score.set_volume(self.volume)
         self.snd_hit.set_volume(self.volume)
 
+
+        #tlacitka
         self.restart_btn = Button(
             screen_widht // 2 - 60,
             screen_height // 2 - 20,
@@ -71,6 +68,7 @@ class Game:
             self.exit_img
         )
 
+
         self.dark_mode = False
 
         #skupiny sprite 
@@ -82,11 +80,14 @@ class Game:
         
         self.state = 'MENU'
 
-        self.difficulty = 'MEDIUM'  # nastaveni vychozi obtížnosti
+        # nastaveni vychozi obtížnosti
+        self.difficulty = 'MEDIUM' 
+
 
     def draw_text(self, text, font, text_col, x, y):
         img = font.render(text, True, text_col)
         self.screen.blit(img, (x, y))
+
 
     def reset_game(self):
         self.pipe_group.empty()
@@ -97,6 +98,7 @@ class Game:
         self.flying = False
         return self.score
     
+
     def run(self):
         self.running = True
         while self.running :
@@ -115,6 +117,7 @@ class Game:
             
             pygame.display.update()
             self.clock.tick(fps)
+
 
     def play_game(self):
             #pozadi
@@ -164,8 +167,6 @@ class Game:
                 #generovani novych rour
                 time_now = pygame.time.get_ticks()
                 if time_now - self.last_pipe > pipe_frequency:
-
-                    
                     
                     top_limit = 120
                     bottom_limit = screen_height - 120
@@ -207,7 +208,6 @@ class Game:
                         self.flying = True
                         
 
-
     def menu(self):
         bg_img = self.bg_dark if self.dark_mode else self.bg    
         self.screen.blit(bg_img, (0,0))
@@ -232,8 +232,8 @@ class Game:
                 elif int(screen_height / 2) - 110 < y < int(screen_height / 2) - 50:
                     self.state = 'SETTINGS'
                     return
-
         
+
     def settings(self):
         bg_img = self.bg_dark if self.dark_mode else self.bg
         self.screen.blit(bg_img, (0,0))
@@ -304,6 +304,7 @@ class Game:
 
         self.pipe_group.empty()
         self.last_pipe = pygame.time.get_ticks()
+
 
     def game_over_screen(self):
         bg_img = self.bg_dark if self.dark_mode else self.bg
