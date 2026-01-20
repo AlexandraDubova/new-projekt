@@ -11,6 +11,7 @@ class Pipe(pygame.sprite.Sprite):
         self.gap = gap 
         #pozice 1 je pro horni rouru, -1 pro dolni
         if position == 1:
+            
             self.image = pygame.transform.flip(self.image, False, True)
             self.rect.bottomleft = [x, y]
         elif position == -1:
