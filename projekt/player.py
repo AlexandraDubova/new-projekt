@@ -20,7 +20,7 @@ class Bird(pygame.sprite.Sprite):
     def update(self, flying, game_over):
         if flying:
             #gravitace
-            self.vel += 0.5
+            self.vel += 0.7
             if self.vel > 8:
                 self.vel = 8
         

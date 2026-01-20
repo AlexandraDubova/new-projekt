@@ -165,22 +165,24 @@ class Game:
                 time_now = pygame.time.get_ticks()
                 if time_now - self.last_pipe > pipe_frequency:
 
-                    pipe_height = 320
+                    
                     
                     top_limit = 120
                     bottom_limit = screen_height - 120
 
-                    top_pipe_bottom = random.randint(top_limit + pipe_height, bottom_limit - self.pipe_gap)
+                    pipe_center = random.randint(
+                        top_limit + self.pipe_gap // 2,
+                        bottom_limit - self.pipe_gap // 2
+    )
                     
                     pipe_img = self.pipe_dark if self.dark_mode else self.pipe_light
 
-                    btm_pipe = Pipe(screen_widht,  top_pipe_bottom + self.pipe_gap , -1, self.pipe_speed, self.pipe_gap, pipe_img)
-                    top_pipe = Pipe(screen_widht,   top_pipe_bottom , 1, self.pipe_speed, self.pipe_gap, pipe_img)
+                    btm_pipe = Pipe(screen_widht,  pipe_center + self.pipe_gap// 2 , -1, self.pipe_speed, self.pipe_gap, pipe_img)
+                    top_pipe = Pipe(screen_widht,   pipe_center - self.pipe_gap // 2 , 1, self.pipe_speed, self.pipe_gap, pipe_img)
+                    
                     self.pipe_group.add(btm_pipe)
                     self.pipe_group.add(top_pipe)
                     self.last_pipe = time_now
-
-
 
         
                 self.ground_scroll -= self.pipe_speed
@@ -289,15 +291,15 @@ class Game:
 
     def apply_difficulty(self):
         if self.difficulty == 'EASY':
-            self.pipe_gap = 170
+            self.pipe_gap = 210
             self.pipe_speed = 3
 
         elif self.difficulty == 'MEDIUM':
-            self.pipe_gap = 150
+            self.pipe_gap = 190
             self.pipe_speed = 4
 
         elif self.difficulty == 'HARD':
-            self.pipe_gap = 120
+            self.pipe_gap = 150
             self.pipe_speed = 5
 
         self.pipe_group.empty()
